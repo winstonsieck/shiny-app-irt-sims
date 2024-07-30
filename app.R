@@ -15,28 +15,37 @@ ui <- fluidPage(
   
   fluidRow(
     column(4, 
-           tags$h4("Sample Sizes"),
+           tags$h4("Sample Sizes", align="center"),
 #           selectInput("np", label = "Number of People", c(500,750,1000)),
+#           numericInput("ni", label = "Number of Items", value = 50, min = 1),
            sliderInput("np", "Number of People", value = 500, min = 500, max = 1000, step=50),
            sliderInput("ni", "Number of Items", value = 50, min = 10, max = 1000, step=10),
-#           numericInput("ni", label = "Number of Items", value = 50, min = 1),
+
     ),
     column(4, 
-           tags$h4("Item Distribution"),
+           tags$h4("Item Distribution", align="center"),
+           tags$div(style="margin-top:40px; padding-left:20px;",
            selectInput("hard", label = "Hardness", c(0,.25,.5,1,2,4,16,256), selected=4),
            selectInput("easy", label = "Easiness", c(0,.25,.5,1,2,4,16,256), selected=1)
 #           numericInput("hard", label = "Hardness", value = 2, min = 0, step = 0.1),
 #           numericInput("easy", label = "Easiness", value = 2, min = 0, step = 0.1)
-    ),
+    )),
     column(4,
-           tags$h4("Display Settings"),
-           actionButton("simulate", "Run Simulation")
-    )
+           tags$h4("Execution", align="center"),
+           tags$div(style="margin-top:75px; text-align:center;",
+           actionButton("simulate", "Run Simulation", class = "btn-lg btn-success")
+    ))
   ),
 
   mainPanel(
     tabsetPanel(
       tabPanel("Test Info Curve", plotOutput("testinfo")),
+      tabPanel("ICC", 
+               plotOutput("icc"),
+               textOutput("icc_note")),
+      tabPanel("Scale Char Curve", 
+               plotOutput("scalechar"),
+               textOutput("scc_note")),
       tabPanel("Model Details", verbatimTextOutput("raschmodel"))
     )
   )
@@ -71,7 +80,7 @@ server <- function(input, output, session) {
     return(data.frame(corr))
   }
   
-  # output rendering  
+  # update variables
   v <- reactiveValues(x=NULL)
   observeEvent(input$np, {v$x <- as.numeric(input$np)} )
   observeEvent(v$x, {if(v$x != as.numeric(input$ni)){
@@ -89,13 +98,32 @@ server <- function(input, output, session) {
   
   df <- eventReactive(input$simulate, {
     sim_test_dat(np(),ni(),theta_true(),b_true()) })
+
+  acc_items <- eventReactive(input$simulate, { colMeans(df()) })
+  sel <- eventReactive(input$simulate, {
+    c( which.min(acc_items()), which.min(abs(acc_items()-mean(acc_items()))), which.max(acc_items()) )
+  })
   
   rasch.m <- eventReactive(input$simulate, {
     mirt(df(), 1, itemtype = "Rasch", verbose = F) })
-  
+
+  # output rendering
   output$testinfo <- renderPlot({
     testInfoPlot(rasch.m(), adj_factor = 2)
   }, res = 96)
+
+  output$icc <- renderPlot({
+    tracePlot(rasch.m(),items = sel(), facet = F, legend = T) + 
+      scale_color_brewer(palette = "Set2")
+  }, res = 96)
+
+  output$icc_note <- renderText({"Note: Easiest, central, and hardest items selected for plotting."})
+  
+  output$scalechar <- renderPlot({
+    scaleCharPlot(rasch.m())
+  }, res = 96)
+  
+  output$scc_note <- renderText({"Relation between estimated theta and total correct."})
   
   output$raschmodel <- renderPrint({
     rasch.m()
