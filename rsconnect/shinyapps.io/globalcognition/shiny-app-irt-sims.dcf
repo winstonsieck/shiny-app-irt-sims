@@ -1,0 +1,12 @@
+name: shiny-app-irt-sims
+title: shiny-app-irt-sims
+username: globalcognition
+account: globalcognition
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12386568
+bundleId: 8925924
+url: https://globalcognition.shinyapps.io/shiny-app-irt-sims/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

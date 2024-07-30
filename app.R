@@ -11,7 +11,8 @@ ui <- fluidPage(
   titlePanel(
     div(style="margin-bottom:50px;",
       h1("Rasch Model Simulations", align="center")
-    )),
+    ),
+    windowTitle="Rasch Model Simulations"),
   
   fluidRow(
     column(4, 
