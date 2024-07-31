@@ -95,7 +95,7 @@ server <- function(input, output, session) {
   
   theta_true <- eventReactive(input$simulate, { rnorm(np(),0,1) })
   b_true <- eventReactive(input$simulate, {
-    6*(rbeta(ni(),hard(),easy())-.5) })
+    8*(rbeta(ni(),hard(),easy())-.5) })
   
   df <- eventReactive(input$simulate, {
     sim_test_dat(np(),ni(),theta_true(),b_true()) })
