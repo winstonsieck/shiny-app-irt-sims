@@ -61,7 +61,7 @@ server <- function(input, output, session) {
   # supporting libraries, functions
   library(mirt)
   library(ggmirt)
-  library(psych)
+#  library(psych)
   library(dplyr)
   library(ggplot2)
   
@@ -110,7 +110,7 @@ server <- function(input, output, session) {
 
   # output rendering
   output$testinfo <- renderPlot({
-    testInfoPlot(rasch.m(), adj_factor = 2)
+    testInfoPlot(rasch.m(), adj_factor = 2) 
   }, res = 96)
 
   output$icc <- renderPlot({
