@@ -5,7 +5,7 @@ account: globalcognition
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12386568
-bundleId: 8927521
+bundleId: 8933280
 url: https://globalcognition.shinyapps.io/shiny-app-irt-sims/
 version: 1
 asMultiple: FALSE

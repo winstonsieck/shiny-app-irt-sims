@@ -95,7 +95,7 @@ server <- function(input, output, session) {
   
   theta_true <- eventReactive(input$simulate, { rnorm(np(),0,1) })
   b_true <- eventReactive(input$simulate, {
-    8*(rbeta(ni(),hard(),easy())-.5) })
+    6*(rbeta(ni(),hard(),easy())-.5) })
   
   df <- eventReactive(input$simulate, {
     sim_test_dat(np(),ni(),theta_true(),b_true()) })
@@ -110,7 +110,7 @@ server <- function(input, output, session) {
 
   # output rendering
   output$testinfo <- renderPlot({
-    testInfoPlot(rasch.m(), adj_factor = 2) 
+    testInfoPlot(rasch.m(), theta_range=c(-4,4), adj_factor = 2) 
   }, res = 96)
 
   output$icc <- renderPlot({
